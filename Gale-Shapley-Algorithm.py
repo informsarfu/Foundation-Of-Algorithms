@@ -9,31 +9,29 @@ def gs(h_rec,s_rec):
         h_pref[h] = h_rec[h][1]
     
     free_s = set(s_rec.keys())    
-    matchings = set()
+    matchings = {}
     
     while stack: #Algorithm runs as long as stack is not empty.
         curr_hosp = stack.pop()
         for s in h_pref[curr_hosp]:
             #First hospital tries to match its vacancies with unpaired students.
             if h_pos[curr_hosp]>0 and s in free_s:
-                matchings.add((curr_hosp,s))
+                matchings[s]=curr_hosp
                 free_s.remove(s)
                 h_pos[curr_hosp]-=1 
             elif h_pos[curr_hosp]>0 and s not in free_s: #elif student is already paired,
-                for old_hosp,stud in matchings:
-                    if stud == s:
-                        if old_hosp==curr_hosp:
-                            break
-                        #check student preference list to see if current hospital is prefered over older pair.
-                        if s_rec[s].index(curr_hosp)<s_rec[s].index(old_hosp):
-                            #If so, add this new pair to the  matchings set and remove the old pair
-                            matchings.add((curr_hosp,s))
-                            matchings.remove((old_hosp,s))
-                            h_pos[old_hosp]+=1
-                            h_pos[curr_hosp]-=1
-                            #push the removed hospital (from matchings) back into the stack as it is unpaired.
-                            stack.append(old_hosp)
-                            break
+                old_hosp = matchings[s]
+                #ignore if new and old hospital is same as its the same pair.
+                if curr_hosp==old_hosp:
+                    continue
+                #check student preference list to see if current hospital is prefered over older pair.
+                elif s_rec[s].index(curr_hosp)<s_rec[s].index(old_hosp):
+                    #If so, add this new pair to the  matchings set and remove the old pair.
+                    matchings[s] = curr_hosp
+                    h_pos[old_hosp]+=1
+                    h_pos[curr_hosp]-=1
+                    #push the removed hospital (from matchings) back into the stack as it is unpaired.
+                    stack.append(old_hosp)
             else:
                 break
     return matchings
