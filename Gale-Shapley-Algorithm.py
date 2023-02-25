@@ -37,7 +37,7 @@ def gs(h_rec,s_rec):
     return matchings
             
         
-#Taking inputs of hospitals and students (preference list)
+#Taking inputs of hospitals and students (preference list).
 
 h_rec = {'H1':(2,['A','C','D','E','F','B']),
          'H2':(3,['C','A','E','F','B','D'])}
